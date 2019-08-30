@@ -12,6 +12,8 @@ var EMAIL_ADDRESS = process.env.EMAIL_ADDRESS;
 var TWITTER_HANDLE = process.env.TWITTER_HANDLE;
 var FACEBOOK_HANDLE = process.env.FACEBOOK_HANDLE;
 
+var SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
+
 var EMAIL_HOST = process.env.EMAIL_HOST;
 var EMAIL_USER = process.env.EMAIL_USER;
 var EMAIL_PASS = process.env.EMAIL_PASS;
@@ -91,7 +93,58 @@ function sendOne(templateName, options, data, callback){
  */
 controller.sendVerificationEmail = function(email, token, callback) {
 
-  var options = {
+var sg = require('sendgrid')(SENDGRID_API_KEY);
+var request = sg.emptyRequest({
+  method: 'POST',
+  path: '/v3/mail/send',
+  body: {
+    personalizations: [
+        {
+          to: [
+              {
+                email: email,
+              },
+          ],
+          subject: 'YCP Hacks - Verify your email',
+        },
+    ],
+    from: {
+      email: 'info@ycphacks.io'
+    },
+    content: [
+        {
+          type: 'text/plain',
+          value: 'Feature in development!',
+        },
+    ],
+  },
+});
+
+//With promise
+sg.API(request)
+  .then(response => {
+    console.log(response.statusCode);
+    console.log(response.body);
+    console.log(response.headers);
+  })
+  .catch(error => {
+    //error is an instance of SendGridError
+    //The full response is attached to error.response
+    console.log(error.response.statusCode);
+  });
+
+//With callback
+sg.API(request, function(error, response) {
+  if (error) {
+    console.log('Error response received');
+  }
+  console.log(response.statusCode);
+  console.log(response.body);
+  console.log(response.headers);
+});
+
+
+ /* var options = {
     to: email,
     subject: "YCP Hacks - Verify your email"
   };
@@ -106,7 +159,7 @@ controller.sendVerificationEmail = function(email, token, callback) {
    *   verifyUrl: the url that the user must visit to verify their account
    * }
    */
-  sendOne('email-verify', options, locals, function(err, info){
+  /*sendOne('email-verify', options, locals, function(err, info){
     if (err){
       console.log(err);
     }
@@ -117,7 +170,7 @@ controller.sendVerificationEmail = function(email, token, callback) {
       callback(err, info);
     }
   });
-
+*/
 };
 
 /**

@@ -30,7 +30,8 @@
     "passport-local": "^1.0.0",
     "request": "^2.60.0",
     "underscore": "^1.8.3",
-    "validator": "^3.40.1"
+    "validator": "^3.40.1",
+    "sendgrid": "^4.2.0"
   },
   "scripts": {
     "mongo": "mongod --dbpath db",
