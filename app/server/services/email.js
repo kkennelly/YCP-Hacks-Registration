@@ -115,7 +115,7 @@ var request = sg.emptyRequest({
     content: [
         {
           type: 'text/plain',
-          value: verifyUrl,
+          value: "Hit the link to verify your email!\n" + verifyUrl,
         },
     ],
   },
@@ -181,7 +181,61 @@ sg.API(request, function(error, response) {
  * @param  {Function} callback [description]
  */
 controller.sendPasswordResetEmail = function(email, token, callback) {
+	
+var resetUrl = 'https://ycphacks.herokuapp.com/reset/' + token;
+var sg = require('sendgrid')(SENDGRID_API_KEY);
+var request = sg.emptyRequest({
+  method: 'POST',
+  path: '/v3/mail/send',
+  body: {
+    personalizations: [
+        {
+          to: [
+              {
+                email: email,
+              },
+          ],
+          subject: 'YCP Hacks - Password reset requested!',
+        },
+    ],
+    from: {
+      email: 'info@ycphacks.io'
+    },
+    content: [
+        {
+          type: 'text/plain',
+          value: 'Somebody (hopefully you!) has requested that your password be reset. If ' +
+       'this was not you, feel free to disregard this email. This link will expire in one hour.\n' + resetUrl,
+        },
+    ],
+  },
+});
 
+//With promise
+sg.API(request)
+  .then(response => {
+    console.log(response.statusCode);
+    console.log(response.body);
+    console.log(response.headers);
+  })
+  .catch(error => {
+    //error is an instance of SendGridError
+    //The full response is attached to error.response
+    console.log(error.response.statusCode);
+  });
+
+//With callback
+sg.API(request, function(error, response) {
+  if (error) {
+    console.log('Error response received');
+  }
+  console.log(response.statusCode);
+  console.log(response.body);
+  console.log(response.headers);
+});
+
+
+/*
   var options = {
     to: email,
     subject: "YCP Hacks - Password reset requested!"
@@ -202,7 +256,7 @@ controller.sendPasswordResetEmail = function(email, token, callback) {
    *   verifyUrl: the url that the user must visit to verify their account
    * }
    */
-  sendOne('email-link-action', options, locals, function(err, info){
+  /*sendOne('email-link-action', options, locals, function(err, info){
     if (err){
       console.log(err);
     }
@@ -213,7 +267,7 @@ controller.sendPasswordResetEmail = function(email, token, callback) {
       callback(err, info);
     }
   });
-
+*/
 };
 
 /* Notify users when they've been accepted */
