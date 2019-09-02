@@ -115,7 +115,7 @@ var request = sg.emptyRequest({
     content: [
         {
           type: 'text/plain',
-          value: "Hit the link to verify your email!\n" + verifyUrl,
+          value: "Hit the link below to verify your email!<br>" + verifyUrl,
         },
     ],
   },
@@ -205,7 +205,7 @@ var request = sg.emptyRequest({
         {
           type: 'text/plain',
           value: 'Somebody (hopefully you!) has requested that your password be reset. If ' +
-       'this was not you, feel free to disregard this email. This link will expire in one hour.\n' + resetUrl,
+       'this was not you, feel free to disregard this email. This link will expire in one hour.<br>' + resetUrl,
         },
     ],
   },
