@@ -93,6 +93,7 @@ function sendOne(templateName, options, data, callback){
  */
 controller.sendVerificationEmail = function(email, token, callback) {
 
+var verifyUrl = 'https://ycphacks.herokuapp.com/verify/' + token;
 var sg = require('sendgrid')(SENDGRID_API_KEY);
 var request = sg.emptyRequest({
   method: 'POST',
@@ -114,7 +115,7 @@ var request = sg.emptyRequest({
     content: [
         {
           type: 'text/plain',
-          value: 'Feature in development!',
+          value: verifyUrl,
         },
     ],
   },
