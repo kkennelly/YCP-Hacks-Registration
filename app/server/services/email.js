@@ -205,7 +205,7 @@ var request = sg.emptyRequest({
         {
           type: 'text/plain',
           value: 'Somebody (hopefully you!) has requested that your password be reset. If ' +
-       'this was not you, feel free to disregard this email. This link will expire in one hour. \r\n' + resetUrl,
+       'this was not you, feel free to disregard this email. This link will expire in one hour. \r\n ' + resetUrl,
         },
     ],
   },
@@ -272,6 +272,59 @@ sg.API(request, function(error, response) {
 
 /* Notify users when they've been accepted */
 controller.notifyAccepted = function(email, callback) {
+	
+var acceptedUrl = 'https://ycphacks.herokuapp.com';
+var sg = require('sendgrid')(SENDGRID_API_KEY);
+var request = sg.emptyRequest({
+  method: 'POST',
+  path: '/v3/mail/send',
+  body: {
+    personalizations: [
+        {
+          to: [
+              {
+                email: email,
+              },
+          ],
+          subject: "YCP Hacks - YOU'RE IN!",
+        },
+    ],
+    from: {
+      email: 'info@ycphacks.io'
+    },
+    content: [
+        {
+          type: 'text/plain',
+          value: 'You\'ve been accepted to YCP Hacks! Now sign in to confirm your spot. \r\n ' + acceptedUrl,
+        },
+    ],
+  },
+});
+
+//With promise
+sg.API(request)
+  .then(response => {
+    console.log(response.statusCode);
+    console.log(response.body);
+    console.log(response.headers);
+  })
+  .catch(error => {
+    //error is an instance of SendGridError
+    //The full response is attached to error.response
+    console.log(error.response.statusCode);
+  });
+
+//With callback
+sg.API(request, function(error, response) {
+  if (error) {
+    console.log('Error response received');
+  }
+  console.log(response.statusCode);
+  console.log(response.body);
+  console.log(response.headers);
+});
+
+/*
   var options = {
       to: email,
       subject: "YCP Hacks - YOU'RE IN!"
@@ -290,7 +343,7 @@ controller.notifyAccepted = function(email, callback) {
    *   verifyUrl: the url that the user must visit to verify their account
    * }
    */
-  sendOne('email-link-action', options, locals, function(err, info){
+  /*sendOne('email-link-action', options, locals, function(err, info){
     if (err){
       console.log(err);
     }
@@ -301,6 +354,7 @@ controller.notifyAccepted = function(email, callback) {
       callback(err, info);
     }
   });
+  */
 };
 
 /**
@@ -310,6 +364,57 @@ controller.notifyAccepted = function(email, callback) {
  */
 controller.sendPasswordChangedEmail = function(email, callback){
 
+var sg = require('sendgrid')(SENDGRID_API_KEY);
+var request = sg.emptyRequest({
+  method: 'POST',
+  path: '/v3/mail/send',
+  body: {
+    personalizations: [
+        {
+          to: [
+              {
+                email: email,
+              },
+          ],
+          subject: "YCP Hacks - Your password has been changed!",
+        },
+    ],
+    from: {
+      email: 'info@ycphacks.io'
+    },
+    content: [
+        {
+          type: 'text/plain',
+          value: 'Somebody (hopefully you!) has successfully changed your password.',
+        },
+    ],
+  },
+});
+
+//With promise
+sg.API(request)
+  .then(response => {
+    console.log(response.statusCode);
+    console.log(response.body);
+    console.log(response.headers);
+  })
+  .catch(error => {
+    //error is an instance of SendGridError
+    //The full response is attached to error.response
+    console.log(error.response.statusCode);
+  });
+
+//With callback
+sg.API(request, function(error, response) {
+  if (error) {
+    console.log('Error response received');
+  }
+  console.log(response.statusCode);
+  console.log(response.body);
+  console.log(response.headers);
+});
+
+/*
   var options = {
     to: email,
     subject: "YCP Hacks - Your password has been changed!"
@@ -326,7 +431,7 @@ controller.sendPasswordChangedEmail = function(email, callback){
    *   verifyUrl: the url that the user must visit to verify their account
    * }
    */
-  sendOne('email-basic', options, locals, function(err, info){
+  /*sendOne('email-basic', options, locals, function(err, info){
     if (err){
       console.log(err);
     }
@@ -337,7 +442,7 @@ controller.sendPasswordChangedEmail = function(email, callback){
       callback(err, info);
     }
   });
-
+*/
 };
 
 module.exports = controller;
