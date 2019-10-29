@@ -17,7 +17,7 @@ var schema = new mongoose.Schema({
   },
   timeClose: {
     type: Number,
-    default: Date.now() + 31104000000 // Add a year from now.
+    default: Date.now() + 62208000000 // Add a year from now.
   },
   timeConfirm: {
     type: Number,
